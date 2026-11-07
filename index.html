@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Food Recipe Finder &mdash; Discover Your Next Favorite Meal</title>
+  <meta name="description" content="Browse recipes from around the world with Food Recipe Finder. Search by name or ingredient, explore categories and cuisines, save favorites, and cook something new tonight." />
+  <meta name="theme-color" content="#FFF9F0" id="meta-theme-color" />
+  <meta name="color-scheme" content="light dark" />
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
+
+  <!-- Typography: Fraunces for headings, Inter for body copy -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="style.css" />
+  <script>
+    (function () {
+      try {
+        var stored = localStorage.getItem('frf-theme');
+        var prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+        var theme = stored === 'dark' || stored === 'light' ? stored : (prefersDark ? 'dark' : 'light');
+        document.documentElement.setAttribute('data-theme', theme);
+        var meta = document.querySelector('meta[name="theme-color"]');
+        if (meta) meta.setAttribute('content', theme === 'dark' ? '#1f1712' : '#FFF9F0');
+      } catch (e) {}
+    })();
+  </script>
+</head>
+<body>
+  <!-- ==================== SVG icon sprite ==================== -->
+  <svg class="svg-sprite" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
+    <symbol id="icon-search" viewBox="0 0 24 24">
+      <circle cx="11" cy="11" r="7" />
+      <path d="m20 20-3.6-3.6" />
+    </symbol>
+    <symbol id="icon-heart" viewBox="0 0 24 24">
+      <path d="M12 20.2s-7.3-4.4-7.3-9.3A4.2 4.2 0 0 1 12 8.2a4.2 4.2 0 0 1 7.3 2.7c0 4.9-7.3 9.3-7.3 9.3Z" />
+    </symbol>
+    <symbol id="icon-close" viewBox="0 0 24 24">
+      <path d="m6 6 12 12M18 6 6 18" />
+    </symbol>
+    <symbol id="icon-sparkle" viewBox="0 0 24 24">
+      <path d="m12 3 1.9 5.3L19 10l-5.1 1.7L12 17l-1.9-5.3L5 10l5.1-1.7L12 3Z" />
+      <path d="m18.4 15.8.8 2.2 2.2.8-2.2.8-.8 2.2-.8-2.2-2.2-.8 2.2-.8.8-2.2Z" />
+    </symbol>
+    <symbol id="icon-arrow" viewBox="0 0 24 24">
+      <path d="M5 12h13M13 6.5 18.5 12 13 17.5" />
+    </symbol>
+    <symbol id="icon-bowl" viewBox="0 0 24 24">
+      <path d="M3.5 11.5h17a8.5 8.5 0 0 1-17 0Z" />
+      <path d="M8 8.2c0-1.3 1.4-1.7 1.4-3M12 8.2c0-1.6 1.5-1.9 1.5-3.4M16 8.2c0-1.1 1.2-1.5 1.2-2.6" />
+    </symbol>
+    <symbol id="icon-basket" viewBox="0 0 24 24">
+      <path d="M4 9h16l-1.4 9.2a2 2 0 0 1-2 1.8H7.4a2 2 0 0 1-2-1.8L4 9Z" />
+      <path d="m9 9 3-5 3 5" />
+      <path d="M10 13v3M14 13v3" />
+    </symbol>
+    <symbol id="icon-sun" viewBox="0 0 24 24">
+      <circle cx="12" cy="12" r="4.2" />
+      <path d="M12 2.5v2.4M12 19.1v2.4M4.9 4.9l1.7 1.7M17.4 17.4l1.7 1.7M2.5 12h2.4M19.1 12h2.4M4.9 19.1l1.7-1.7M17.4 6.6l1.7-1.7" />
+    </symbol>
+    <symbol id="icon-moon" viewBox="0 0 24 24">
+      <path d="M20 14.4A8.5 8.5 0 1 1 9.6 4a7 7 0 1 0 10.4 10.4Z" />
+    </symbol>
+  </svg>
+
+  <!-- ==================== Header / navigation ==================== -->
+  <header class="site-header" id="site-header">
+    <div class="container header-inner">
+      <a class="brand" href="#home" aria-label="Food Recipe Finder home">
+        <span class="brand-mark" aria-hidden="true">
+          <svg class="icon icon-bowl"><use href="#icon-bowl" /></svg>
+        </span>
+        <span class="brand-text">Food Recipe <em>Finder</em></span>
+      </a>
+
+      <nav class="primary-nav" id="primary-nav" aria-label="Main navigation">
+        <a class="nav-link" data-nav="home" href="#home">Home</a>
+        <a class="nav-link" data-nav="explore" href="#explore">Explore Recipes</a>
+        <a class="nav-link" data-nav="categories" href="#categories">Categories</a>
+        <a class="nav-link" data-nav="favorites" href="#favorites">
+          Favorites
+          <span class="fav-count" id="nav-fav-count" hidden>0</span>
+        </a>
+        <a class="nav-link" data-nav="about" href="#about">About</a>
+      </nav>
+
+      <div class="header-actions">
+        <button class="icon-btn" id="theme-toggle" type="button" aria-label="Switch to dark theme" title="Switch theme">
+          <svg class="icon" id="theme-toggle-icon" aria-hidden="true"><use href="#icon-moon" /></svg>
+        </button>
+        <button class="icon-btn" id="nav-search-btn" type="button" aria-label="Search recipes">
+          <svg class="icon"><use href="#icon-search" /></svg>
+        </button>
+        <button class="icon-btn" id="nav-shopping-btn" type="button" aria-label="Shopping list" aria-controls="view-shopping">
+          <svg class="icon"><use href="#icon-basket" /></svg>
+          <span class="icon-badge" id="shopping-badge" hidden>0</span>
+        </button>
+        <button class="icon-btn nav-toggle" id="nav-toggle" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="primary-nav">
+          <span class="bar"></span>
+          <span class="bar"></span>
+          <span class="bar"></span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main id="main">
+    <!-- ==================== Home ==================== -->
+    <section class="view" id="view-home">
+      <section class="hero">
+        <div class="container hero-grid">
+          <div class="hero-copy">
+            <p class="eyebrow">Cook something delicious</p>
+            <h1 class="hero-title">Discover Your Next Favorite Meal</h1>
+            <p class="hero-sub">Explore delicious recipes, discover new flavors, and find inspiration for your next cooking adventure.</p>
+
+            <form class="search-bar" id="hero-form" role="search">
+              <label class="sr-only" for="hero-search">Search recipes by name</label>
+              <svg class="icon search-bar-icon" aria-hidden="true"><use href="#icon-search" /></svg>
+              <input id="hero-search" type="search" name="search" placeholder="Search recipes, e.g. chicken curry" autocomplete="off" />
+              <button class="btn btn-primary" type="submit">Search</button>
+            </form>
+
+            <div class="hero-actions">
+              <a class="btn btn-primary btn-lg" href="#explore">
+                Explore Recipes
+                <svg class="icon" aria-hidden="true"><use href="#icon-arrow" /></svg>
+              </a>
+              <button class="btn btn-outline btn-lg" type="button" data-action="surprise">
+                <svg class="icon" aria-hidden="true"><use href="#icon-sparkle" /></svg>
+                Surprise Me!
+              </button>
+            </div>
+
+            <p class="hero-hint">Live recipes from TheMealDB &mdash; every dish links back to its original publisher when available.</p>
+          </div>
+
+          <!-- Recipe of the moment, loaded from the API -->
+          <aside class="hero-pick" id="hero-pick" aria-live="polite" aria-label="Today's recipe pick"></aside>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="container">
+          <div class="section-head">
+            <div>
+              <p class="eyebrow">Handpicked for you</p>
+              <h2>Featured Recipes</h2>
+              <p class="section-sub">A rotating handful of recipes pulled fresh from TheMealDB.</p>
+            </div>
+            <button class="btn btn-ghost" id="featured-refresh" type="button">Shuffle picks</button>
+          </div>
+          <div class="recipe-grid" id="featured-grid"></div>
+        </div>
+      </section>
+
+      <section class="section" id="recent-section" hidden>
+        <div class="container">
+          <div class="section-head">
+            <div>
+              <p class="eyebrow">Pick up where you left off</p>
+              <h2>Recently Viewed</h2>
+              <p class="section-sub">The last recipes you opened, remembered on this device.</p>
+            </div>
+            <button class="btn btn-ghost" type="button" data-action="clear-recent">Clear history</button>
+          </div>
+          <div class="recipe-grid" id="recent-grid"></div>
+        </div>
+      </section>
+
+      <section class="section section-alt">
+        <div class="container">
+          <div class="section-head">
+            <div>
+              <p class="eyebrow">Browse by dish</p>
+              <h2>Popular Categories</h2>
+              <p class="section-sub">From weeknight chicken to weekend desserts &mdash; pick a category and see what's cooking.</p>
+            </div>
+            <a class="btn btn-ghost" href="#categories">All categories</a>
+          </div>
+          <div class="category-grid" id="home-categories"></div>
+        </div>
+      </section>
+
+      <section class="section" id="filipino-section">
+        <div class="container">
+          <div class="section-head">
+            <div>
+              <p class="eyebrow">From the Philippines</p>
+              <h2>Filipino Kitchen</h2>
+              <p class="section-sub">Adobo, pancit, sinigang, kare-kare, lechon, halo-halo and more &mdash; every Filipino dish in TheMealDB, loaded live.</p>
+            </div>
+            <a class="btn btn-ghost" href="#explore" id="filipino-explore" data-action="explore-all" data-value="Filipino">Explore Filipino recipes</a>
+          </div>
+          <div class="recipe-grid" id="filipino-grid"></div>
+        </div>
+      </section>
+    </section>
+
+    <!-- ==================== Explore ==================== -->
+    <section class="view" id="view-explore" hidden>
+      <div class="container page-head">
+        <p class="eyebrow">Find your flavor</p>
+        <h1>Explore Recipes</h1>
+        <p class="section-sub">Search by recipe name or by ingredient, then narrow the results by category or cuisine.</p>
+      </div>
+
+      <div class="container">
+        <form class="filter-panel" id="explore-form" role="search">
+          <div class="field">
+            <label for="explore-search">Search</label>
+            <div class="input-wrap">
+              <svg class="icon" aria-hidden="true"><use href="#icon-search" /></svg>
+              <input id="explore-search" type="search" name="search" placeholder="e.g. chicken, pasta, garlic" autocomplete="off" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="search-suggestions" />
+              <ul class="suggestions" id="search-suggestions" role="listbox" aria-label="Recipe name suggestions" hidden></ul>
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="search-mode">Search by</label>
+            <select id="search-mode" name="mode">
+              <option value="name">Recipe name</option>
+              <option value="ingredient">Ingredient</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="filter-category">Category</label>
+            <select id="filter-category" name="category">
+              <option value="">Any category</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="filter-area">Cuisine</label>
+            <select id="filter-area" name="area">
+              <option value="">Any cuisine</option>
+            </select>
+          </div>
+
+          <div class="filter-actions">
+            <button class="btn btn-primary" type="submit">Search</button>
+            <button class="btn btn-ghost" id="clear-filters" type="button">Clear</button>
+          </div>
+        </form>
+
+        <div class="results-head">
+          <div>
+            <h2 id="explore-title">Fresh ideas</h2>
+            <p class="results-count" id="explore-sub" aria-live="polite"></p>
+          </div>
+          <button class="btn btn-outline" type="button" data-action="surprise">
+            <svg class="icon" aria-hidden="true"><use href="#icon-sparkle" /></svg>
+            Surprise Me!
+          </button>
+        </div>
+
+        <div class="recipe-grid" id="explore-results" aria-busy="false"></div>
+
+        <div class="load-more-wrap">
+          <button class="btn btn-outline" id="load-more" type="button" hidden>Load more recipes</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== Categories ==================== -->
+    <section class="view" id="view-categories" hidden>
+      <div class="container page-head">
+        <p class="eyebrow">Something for every craving</p>
+        <h1>Recipe Categories</h1>
+        <p class="section-sub">Pick a category to instantly load its recipes straight from TheMealDB.</p>
+      </div>
+
+      <div class="container">
+        <div id="categories-directory">
+          <div class="category-grid" id="categories-grid"></div>
+        </div>
+
+        <div id="category-results" hidden>
+          <div class="results-head">
+            <div>
+              <h2 id="category-results-title">Category recipes</h2>
+              <p class="results-count">Recipes from TheMealDB</p>
+            </div>
+            <button class="btn btn-ghost" id="back-to-categories" type="button">All categories</button>
+          </div>
+          <div class="recipe-grid" id="category-results-grid"></div>
+          <div class="load-more-wrap">
+            <button class="btn btn-outline" id="category-load-more" type="button" hidden>Load more recipes</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== Favorites ==================== -->
+    <section class="view" id="view-favorites" hidden>
+      <div class="container page-head">
+        <p class="eyebrow">Your recipe box</p>
+        <h1>Favorites</h1>
+        <p class="section-sub" id="favorites-count">Saved on this device &mdash; still here when you come back.</p>
+        <div class="page-actions">
+          <a class="btn btn-outline" href="#shopping">
+            <svg class="icon" aria-hidden="true"><use href="#icon-basket" /></svg>
+            Shopping list
+            <span class="pill-count" id="favorites-shopping-count" hidden>0</span>
+          </a>
+        </div>
+      </div>
+
+      <div class="container">
+        <div class="recipe-grid" id="favorites-grid"></div>
+        <div id="favorites-empty" class="empty-wrap" hidden></div>
+      </div>
+    </section>
+
+    <!-- ==================== Shopping list ==================== -->
+    <section class="view" id="view-shopping" hidden>
+      <div class="container page-head">
+        <p class="eyebrow">Ready for the market</p>
+        <h1>Shopping List</h1>
+        <p class="section-sub" id="shopping-summary">Ingredients you add from recipes appear here and stay synced to your account.</p>
+        <div class="page-actions">
+          <button class="btn btn-primary" type="button" data-action="shopping-add-favorites">
+            <svg class="icon" aria-hidden="true"><use href="#icon-basket" /></svg>
+            Add ingredients from favorites
+          </button>
+          <a class="btn btn-ghost" href="#favorites">Back to favorites</a>
+        </div>
+      </div>
+
+      <div class="container shopping-layout">
+        <div class="shopping-panel">
+          <div class="shopping-toolbar">
+            <p class="shopping-count" id="shopping-count">No items yet</p>
+            <div class="shopping-tools">
+              <button class="btn btn-ghost btn-sm" type="button" data-action="shopping-clear-checked">Clear checked</button>
+              <button class="btn btn-ghost btn-sm" type="button" data-action="shopping-clear">Clear list</button>
+            </div>
+          </div>
+          <ul class="shopping-list" id="shopping-items"></ul>
+          <div id="shopping-empty" class="empty-wrap" hidden></div>
+        </div>
+
+        <aside class="shopping-note">
+          <h2>How it works</h2>
+          <p>Open any recipe and choose <strong>Add ingredients</strong> to send its shopping list here. You can also pull in everything from the recipes you have saved.</p>
+          <p>Checked items stay ticked after a refresh, so you can shop across several trips.</p>
+        </aside>
+      </div>
+    </section>
+
+    <!-- ==================== About ==================== -->
+    <section class="view" id="view-about" hidden>
+      <div class="container page-head">
+        <p class="eyebrow">Our kitchen story</p>
+        <h1>About Food Recipe Finder</h1>
+      </div>
+
+      <div class="container about-grid">
+        <div class="about-card">
+          <p class="about-text">Welcome to Food Recipe Finder! This website was created to help food lovers discover delicious recipes, explore different cuisines, and find inspiration in cooking. Whether you're a beginner or an experienced home cook, there's always something new to try.</p>
+          <p class="about-text">Use the search bar to look up a dish by name, or switch to ingredient search and cook with whatever is already in your fridge. Save anything you love to your favorites, and let &ldquo;Surprise Me!&rdquo; decide dinner for you.</p>
+        </div>
+
+        <div class="about-aside">
+          <div class="about-note">
+            <h2>Where the recipes come from</h2>
+            <p>All recipe data and food photography on this site come from <a href="https://www.themealdb.com" target="_blank" rel="noopener noreferrer">TheMealDB</a>, a free and open recipe API. Nothing here is invented or hard-coded.</p>
+            <p>When TheMealDB provides a source, each recipe links to the original publisher's page under &ldquo;View Original Recipe&rdquo;. Those links belong to their respective publishers &mdash; this site does not claim ownership of them.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ==================== Footer ==================== -->
+  <footer class="site-footer">
+    <div class="container footer-grid">
+      <div class="footer-brand">
+        <a class="brand brand-light" href="#home">
+          <span class="brand-mark" aria-hidden="true">
+            <svg class="icon icon-bowl"><use href="#icon-bowl" /></svg>
+          </span>
+          <span class="brand-text">Food Recipe <em>Finder</em></span>
+        </a>
+        <p>Discover delicious recipes, explore different cuisines, and find inspiration in cooking.</p>
+      </div>
+
+      <nav aria-label="Footer navigation">
+        <h2 class="footer-title">Quick Links</h2>
+        <ul class="footer-links">
+          <li><a href="#home">Home</a></li>
+          <li><a href="#explore">Explore Recipes</a></li>
+          <li><a href="#categories">Categories</a></li>
+          <li><a href="#explore" data-action="explore-all" data-value="Filipino">Filipino Recipes</a></li>
+          <li><a href="#favorites">Favorites</a></li>
+          <li><a href="#shopping">Shopping List</a></li>
+          <li><a href="#about">About</a></li>
+        </ul>
+      </nav>
+
+      <div>
+        <h2 class="footer-title">Recipe API</h2>
+        <p>Recipe data and photography are provided by <a href="https://www.themealdb.com" target="_blank" rel="noopener noreferrer">TheMealDB</a>, a free and open recipe API.</p>
+        <p class="footer-note">Every recipe links back to its original publisher whenever the API provides a source.</p>
+      </div>
+    </div>
+
+    <div class="container footer-bottom">
+      <p>&copy; <span id="year">2026</span> Food Recipe Finder. All rights reserved.</p>
+      <p>Built with HTML, CSS &amp; Vanilla JavaScript.</p>
+    </div>
+  </footer>
+
+  <!-- ==================== Recipe detail modal ==================== -->
+  <div class="modal" id="recipe-modal" aria-hidden="true">
+    <div class="modal-backdrop" data-close-modal></div>
+    <div class="modal-dialog" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+      <button class="modal-close" id="modal-close" type="button" aria-label="Close recipe">
+        <svg class="icon" aria-hidden="true"><use href="#icon-close" /></svg>
+      </button>
+      <div class="modal-body" id="modal-body"></div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <noscript>
+    <p class="container noscript-note">Food Recipe Finder needs JavaScript enabled to load recipes from TheMealDB.</p>
+  </noscript>
+
+  <!-- Supabase connection -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script>
+    const SUPABASE_URL = "https://izyomedceppbgobqbtnq.supabase.co";
+    const SUPABASE_KEY = "sb_publishable_GWNr8ow8fhg5h7Sg3kSoMg_ZobFPL3p";
+
+    window.dbClient = window.supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_KEY
+    );
+  </script>
+
+  <script src="script.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 450" width="600" height="450" role="img" aria-label="Recipe image unavailable">
+  <rect width="600" height="450" fill="#F3E9DC" />
+  <g fill="none" stroke="#D97745" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" opacity="0.65">
+    <path d="M190 250h220a110 110 0 0 1-220 0Z" />
+    <path d="M258 214c0-16 16-19 16-35M300 214c0-18 16-21 16-38M342 214c0-13 13-16 13-29" />
+  </g>
+  <text x="300" y="330" text-anchor="middle" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="20" font-weight="600" fill="#493323" opacity="0.6">Image unavailable</text>
+</svg>

@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" role="img" aria-label="Food Recipe Finder">
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#F59E0B" />
+      <stop offset="1" stop-color="#D97745" />
+    </linearGradient>
+  </defs>
+  <rect width="64" height="64" rx="16" fill="url(#g)" />
+  <g fill="none" stroke="#FFF9F0" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M14 31h36a18 18 0 0 1-36 0Z" />
+    <path d="M26 24c0-3 3-3.6 3-6.6M32 24c0-3.4 3-4 3-7M38 24c0-2.4 2.4-3 2.4-5.4" />
+  </g>
+</svg>
